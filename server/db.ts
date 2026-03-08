@@ -1,7 +1,33 @@
 import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import fs from 'fs';
 
-const db = new Database('portfolio.db');
+// Use /tmp for SQLite on Vercel/Serverless as the main filesystem is read-only
+const dbPath = process.env.VERCEL 
+  ? path.join('/tmp', 'portfolio.db') 
+  : path.resolve(process.cwd(), 'portfolio.db');
+
+// If on Vercel and the DB doesn't exist in /tmp, we might want to copy the initial one if it exists in the project root
+if (process.env.VERCEL && !fs.existsSync(dbPath)) {
+  const rootDbPath = path.resolve(process.cwd(), 'portfolio.db');
+  if (fs.existsSync(rootDbPath)) {
+    try {
+      fs.copyFileSync(rootDbPath, dbPath);
+    } catch (e) {
+      console.error('Failed to copy DB to /tmp:', e);
+    }
+  }
+}
+
+let db: any;
+try {
+  db = new Database(dbPath);
+} catch (e) {
+  console.error('Failed to initialize database:', e);
+  // Fallback to in-memory if file fails
+  db = new Database(':memory:');
+}
 
 // Initialize tables
 db.exec(`

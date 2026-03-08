@@ -233,9 +233,11 @@ createCrudEndpoints('articles');
 createCrudEndpoints('skills'); 
 
 
+export default app;
+
 // Vite Middleware
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     const vite = await createViteServer({
       server: { 
         middlewareMode: true
@@ -243,7 +245,7 @@ async function startServer() {
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
+  } else if (process.env.NODE_ENV === 'production') {
     // In production, serve static files from dist
     app.use(express.static('dist'));
 
@@ -253,16 +255,18 @@ async function startServer() {
     });
   }
 
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    
-    // Check for critical environment variables
-    if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
-      console.warn('⚠️ WARNING: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Notifications will not work.');
-    } else {
-      console.log('✅ Telegram notifications are configured.');
-    }
-  });
+  if (!process.env.VERCEL) {
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+      
+      // Check for critical environment variables
+      if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
+        console.warn('⚠️ WARNING: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Notifications will not work.');
+      } else {
+        console.log('✅ Telegram notifications are configured.');
+      }
+    });
+  }
 }
 
 startServer();
