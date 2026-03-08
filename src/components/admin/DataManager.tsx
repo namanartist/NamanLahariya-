@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { api } from '../../services/api';
+import { db, handleFirestoreError, OperationType } from '../../firebase';
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, X, Check } from 'lucide-react';
+import { useSiteData } from '../../context/SiteContext';
 
 interface Column {
   key: string;
@@ -20,6 +22,7 @@ export default function DataManager({ endpoint, columns, title }: DataManagerPro
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  const { isLoggedIn } = useSiteData();
 
   useEffect(() => {
     fetchItems();
@@ -27,7 +30,12 @@ export default function DataManager({ endpoint, columns, title }: DataManagerPro
 
   const fetchItems = async () => {
     try {
-      const data = await api.get(`/admin/${endpoint}`);
+      const q = query(collection(db, endpoint));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
       setItems(data);
     } catch (error) {
       console.error(`Failed to fetch ${endpoint}:`, error);
@@ -60,27 +68,38 @@ export default function DataManager({ endpoint, columns, title }: DataManagerPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLoggedIn) {
+      alert("You must be logged in to make changes.");
+      return;
+    }
+
     try {
       if (isAdding) {
-        const newItem = await api.post(`/admin/${endpoint}`, formData);
-        setItems([...items, newItem]);
+        const docRef = await addDoc(collection(db, endpoint), formData);
+        setItems([...items, { id: docRef.id, ...formData }]);
       } else if (editingItem) {
-        const updatedItem = await api.put(`/admin/${endpoint}/${editingItem.id}`, formData);
-        setItems(items.map(i => (i.id === editingItem.id ? updatedItem : i)));
+        const { id, ...data } = formData;
+        await updateDoc(doc(db, endpoint, id), data);
+        setItems(items.map(i => (i.id === id ? { id, ...data } : i)));
       }
       handleCancel();
     } catch (error) {
-      console.error('Failed to save item:', error);
+      handleFirestoreError(error, isAdding ? OperationType.CREATE : OperationType.UPDATE, endpoint);
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
+    if (!isLoggedIn) {
+      alert("You must be logged in to delete items.");
+      return;
+    }
     if (!confirm('Are you sure you want to delete this item?')) return;
+    
     try {
-      await api.delete(`/admin/${endpoint}/${id}`);
+      await deleteDoc(doc(db, endpoint, id));
       setItems(items.filter(i => i.id !== id));
     } catch (error) {
-      console.error('Failed to delete item:', error);
+      handleFirestoreError(error, OperationType.DELETE, endpoint);
     }
   };
 

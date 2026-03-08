@@ -34,7 +34,7 @@ export default function EditableField({ field, as = 'input', className = '', chi
 
   if (isEditing) {
     return (
-      <div className={`relative inline-block w-full ${className}`}>
+      <span className={`relative inline-block w-full ${className}`}>
         {as === 'textarea' ? (
           <textarea
             value={value}
@@ -50,20 +50,20 @@ export default function EditableField({ field, as = 'input', className = '', chi
             className="w-full bg-card border border-accent/50 rounded p-2 outline-none focus:border-accent"
           />
         )}
-        <div className="absolute top-2 right-2 flex gap-2">
+        <span className="absolute top-2 right-2 flex gap-2">
           <button onClick={handleSave} className="p-1 bg-green-500/20 text-green-400 rounded hover:bg-green-500/40">
             <Check size={16} />
           </button>
           <button onClick={handleCancel} className="p-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/40">
             <X size={16} />
           </button>
-        </div>
-      </div>
+        </span>
+      </span>
     );
   }
 
   return (
-    <div className={`relative group inline-block ${className}`}>
+    <span className={`relative group inline-block ${className}`}>
       {children}
       <button
         onClick={() => setIsEditing(true)}
@@ -72,6 +72,6 @@ export default function EditableField({ field, as = 'input', className = '', chi
       >
         <Pencil size={14} />
       </button>
-    </div>
+    </span>
   );
 }

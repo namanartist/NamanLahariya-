@@ -62,6 +62,36 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /skills/{skillId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /experience/{experienceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /education/{educationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /certifications/{certificationId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Default deny
     match /{document=**} {
       allow read, write: if false;

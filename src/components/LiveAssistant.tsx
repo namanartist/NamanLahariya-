@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Mic, MicOff, X, Volume2, VolumeX } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
 import { useSiteData } from '../context/SiteContext';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 interface LiveAssistantProps {
   isOpen: boolean;
@@ -19,8 +21,28 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
   const sessionRef = useRef<any>(null);
   const nextStartTimeRef = useRef<number>(0);
   const { siteData } = useSiteData();
+  const [resumeData, setResumeData] = useState<any>({});
 
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchResumeData = async () => {
+      try {
+        const collections = ['projects', 'experience', 'education', 'skills', 'certifications'];
+        const data: any = {};
+        
+        for (const col of collections) {
+          const snapshot = await getDocs(collection(db, col));
+          data[col] = snapshot.docs.map(doc => doc.data());
+        }
+        setResumeData(data);
+      } catch (error) {
+        console.error("Error fetching resume data:", error);
+      }
+    };
+    
+    fetchResumeData();
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -70,6 +92,13 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
           Title: ${siteData.title}
           Bio: ${siteData.bio}
           Location: ${siteData.location}
+
+          Resume Data:
+          Projects: ${JSON.stringify(resumeData.projects || [])}
+          Experience: ${JSON.stringify(resumeData.experience || [])}
+          Education: ${JSON.stringify(resumeData.education || [])}
+          Skills: ${JSON.stringify(resumeData.skills || [])}
+          Certifications: ${JSON.stringify(resumeData.certifications || [])}
           
           CRITICAL: Speak with a natural, human-like pace and normal speed. Use pauses for emphasis. 
           Do not rush your words. Imagine you are having a relaxed, professional conversation.

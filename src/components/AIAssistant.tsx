@@ -5,6 +5,8 @@ import { GoogleGenAI, Type, Modality, ThinkingLevel } from "@google/genai";
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useSiteData } from '../context/SiteContext';
 import LiveAssistant from './LiveAssistant';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -24,12 +26,32 @@ export default function AIAssistant() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { playHover, playClick, playAppear, playSwoosh } = useSoundEffects();
   const { siteData } = useSiteData();
+  const [resumeData, setResumeData] = useState<any>({});
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    const fetchResumeData = async () => {
+      try {
+        const collections = ['projects', 'experience', 'education', 'skills', 'certifications'];
+        const data: any = {};
+        
+        for (const col of collections) {
+          const snapshot = await getDocs(collection(db, col));
+          data[col] = snapshot.docs.map(doc => doc.data());
+        }
+        setResumeData(data);
+      } catch (error) {
+        console.error("Error fetching resume data:", error);
+      }
+    };
+    
+    fetchResumeData();
+  }, []);
 
   const sendInterestToNaman = async (args: { clientName: string, clientEmail: string, interestDetails: string }) => {
     try {
@@ -110,6 +132,13 @@ export default function AIAssistant() {
             Bio: ${siteData.bio}
             Location: ${siteData.location}
             Email: namanalahariya@gmail.com
+            
+            Resume Data:
+            Projects: ${JSON.stringify(resumeData.projects || [])}
+            Experience: ${JSON.stringify(resumeData.experience || [])}
+            Education: ${JSON.stringify(resumeData.education || [])}
+            Skills: ${JSON.stringify(resumeData.skills || [])}
+            Certifications: ${JSON.stringify(resumeData.certifications || [])}
             
             Your goal is to help visitors learn about Naman and connect them with him. 
             Be professional, friendly, and helpful. 

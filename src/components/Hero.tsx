@@ -57,7 +57,7 @@ export default function Hero() {
           Hi! I'm <EditableField field="name"><span className="text-accent italic">{siteData.name}</span></EditableField>
         </motion.h1>
 
-        <motion.p
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
@@ -69,7 +69,7 @@ export default function Hero() {
           <EditableField field="bio" as="textarea" className="block">
             {siteData.bio}
           </EditableField>
-        </motion.p>
+        </motion.div>
 
         <motion.div
           initial={{ y: 20, opacity: 0 }}

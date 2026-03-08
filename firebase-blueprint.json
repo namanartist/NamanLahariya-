@@ -28,6 +28,89 @@
         "resumeLink": { "type": "string" },
         "avatarUrl": { "type": "string" }
       }
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A portfolio project.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "tech": { "type": "array", "items": { "type": "string" } },
+        "demoLink": { "type": "string" },
+        "githubLink": { "type": "string" },
+        "image": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description"]
+    },
+    "Skill": {
+      "title": "Skill",
+      "description": "A technical skill.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "level": { "type": "number" },
+        "icon": { "type": "string" }
+      },
+      "required": ["name", "category"]
+    },
+    "Experience": {
+      "title": "Experience",
+      "description": "Work experience entry.",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string" },
+        "company": { "type": "string" },
+        "period": { "type": "string" },
+        "description": { "type": "string" },
+        "achievements": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["role", "company", "period"]
+    },
+    "Education": {
+      "title": "Education",
+      "description": "Education entry.",
+      "type": "object",
+      "properties": {
+        "degree": { "type": "string" },
+        "institution": { "type": "string" },
+        "period": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["degree", "institution"]
+    },
+    "Certification": {
+      "title": "Certification",
+      "description": "Professional certification.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "issuer": { "type": "string" },
+        "date": { "type": "string" },
+        "link": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["name", "issuer"]
+    },
+    "Article": {
+      "title": "Article",
+      "description": "Blog post or article.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string" },
+        "readTime": { "type": "string" },
+        "image": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "link": { "type": "string" }
+      },
+      "required": ["title", "date"]
     }
   },
   "firestore": {
@@ -38,6 +121,30 @@
     "/settings/siteData": {
       "schema": "SiteData",
       "description": "Global site settings."
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Portfolio projects."
+    },
+    "/skills/{skillId}": {
+      "schema": "Skill",
+      "description": "Technical skills."
+    },
+    "/experience/{experienceId}": {
+      "schema": "Experience",
+      "description": "Work experience."
+    },
+    "/education/{educationId}": {
+      "schema": "Education",
+      "description": "Education history."
+    },
+    "/certifications/{certificationId}": {
+      "schema": "Certification",
+      "description": "Certifications."
+    },
+    "/articles/{articleId}": {
+      "schema": "Article",
+      "description": "Blog articles."
     }
   }
 }
