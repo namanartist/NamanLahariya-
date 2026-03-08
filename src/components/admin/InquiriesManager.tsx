@@ -1,46 +1,59 @@
 import { useState, useEffect } from 'react';
-import { api } from '../../services/api';
-import { Trash2, Mail, MessageSquare } from 'lucide-react';
+import { db, handleFirestoreError, OperationType } from '../../firebase';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { Trash2, Mail } from 'lucide-react';
+import { useSiteData } from '../../context/SiteContext';
 
 interface Inquiry {
-  id: number;
+  id: string;
   name: string;
   email: string;
   subject: string;
   message: string;
-  date: string;
+  createdAt: any;
 }
 
 export default function InquiriesManager() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isLoggedIn } = useSiteData();
 
   useEffect(() => {
-    fetchInquiries();
-  }, []);
-
-  const fetchInquiries = async () => {
-    try {
-      const data = await api.get('/admin/inquiries');
-      setInquiries(data);
-    } catch (error) {
-      console.error('Failed to fetch inquiries:', error);
-    } finally {
+    if (!isLoggedIn) {
       setLoading(false);
+      return;
     }
-  };
 
-  const handleDelete = async (id: number) => {
+    const path = 'messages';
+    const q = query(collection(db, path), orderBy('createdAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Inquiry[];
+      setInquiries(data);
+      setLoading(false);
+    }, (error) => {
+      console.error('Failed to fetch inquiries:', error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [isLoggedIn]);
+
+  const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this inquiry?')) return;
+    const path = `messages/${id}`;
     try {
-      await api.delete(`/admin/inquiries/${id}`);
-      setInquiries(inquiries.filter(i => i.id !== id));
+      await deleteDoc(doc(db, 'messages', id));
     } catch (error) {
-      console.error('Failed to delete inquiry:', error);
+      handleFirestoreError(error, OperationType.DELETE, path);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (!isLoggedIn) return <div className="text-center text-red-500 py-12">Access Denied. Please login as admin.</div>;
+  if (loading) return <div className="text-center text-gray-500 py-12">Loading inquiries...</div>;
 
   return (
     <div className="space-y-6">
@@ -58,7 +71,7 @@ export default function InquiriesManager() {
                     <span>&bull;</span>
                     <span className="flex items-center gap-1"><Mail size={12} /> {inquiry.email}</span>
                     <span>&bull;</span>
-                    <span>{new Date(inquiry.date).toLocaleDateString()}</span>
+                    <span>{inquiry.createdAt?.toDate ? inquiry.createdAt.toDate().toLocaleDateString() : 'Just now'}</span>
                   </div>
                 </div>
                 <button 

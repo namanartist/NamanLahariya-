@@ -5,6 +5,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import Loader from './components/Loader';
 import Home from './pages/Home';
 import BlogPost from './pages/BlogPost';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
+import ProtectedRoute from './components/ProtectedRoute';
 import CustomCursor from './components/CustomCursor';
 import { SiteProvider } from './context/SiteContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -31,6 +34,15 @@ export default function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/blog" element={<Home />} /> {/* For now, blog list is on home */}
                   <Route path="/blog/:id" element={<BlogPost />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route 
+                    path="/admin/*" 
+                    element={
+                      <ProtectedRoute>
+                        <Admin />
+                      </ProtectedRoute>
+                    } 
+                  />
                 </Routes>
               </motion.div>
             )}

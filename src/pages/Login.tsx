@@ -1,36 +1,19 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Lock } from 'lucide-react';
+import { Lock, LogIn } from 'lucide-react';
+import { useSiteData } from '../context/SiteContext';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const { login, isLoggedIn, isAuthReady } = useSiteData();
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        navigate('/admin');
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch (err) {
-      setError('An error occurred');
-    }
+  const handleGoogleLogin = async () => {
+    await login();
   };
+
+  if (isAuthReady && isLoggedIn) {
+    navigate('/admin');
+  }
 
   return (
     <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white p-4">
@@ -45,44 +28,27 @@ export default function Login() {
           </div>
         </div>
         
-        <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-2">Admin Login</h2>
+        <p className="text-gray-400 text-center mb-8 text-sm">
+          Only authorized administrators can access this section.
+        </p>
         
-        {error && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded-lg mb-4 text-sm text-center">
-            {error}
-          </div>
-        )}
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-3"
+        >
+          <LogIn size={20} />
+          Sign in with Google
+        </button>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Username</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors"
-              required
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-accent text-black font-bold py-3 rounded-lg hover:bg-accent-dim transition-colors mt-4"
+        <div className="mt-8 pt-6 border-t border-white/5 text-center">
+          <button 
+            onClick={() => navigate('/')}
+            className="text-sm text-gray-500 hover:text-accent transition-colors"
           >
-            Login
+            Back to Portfolio
           </button>
-        </form>
+        </div>
       </motion.div>
     </div>
   );

@@ -3,6 +3,8 @@ import { Send, Mail, Phone, MapPin, CheckCircle, AlertCircle } from 'lucide-reac
 import { useState, FormEvent, ChangeEvent, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import useSoundEffects from '../hooks/useSoundEffects';
+import { db, handleFirestoreError, OperationType } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function Contact() {
   const { playHover, playClick, playSuccess, playSwoosh } = useSoundEffects();
@@ -37,16 +39,14 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to send message');
+      const path = 'messages';
+      try {
+        await addDoc(collection(db, path), {
+          ...formData,
+          createdAt: serverTimestamp()
+        });
+      } catch (error) {
+        handleFirestoreError(error, OperationType.CREATE, path);
       }
       
       setIsSubmitting(false);
@@ -58,7 +58,20 @@ export default function Contact() {
       setTimeout(() => setIsSuccess(false), 5000);
     } catch (error: any) {
       console.error('Error submitting form:', error);
-      setErrors({ submit: error.message || 'Failed to send message. Please try again later.' });
+      let errorMessage = 'Failed to send message. Please try again later.';
+      
+      // Attempt to parse Firestore error info if it's a JSON string
+      try {
+        const errInfo = JSON.parse(error.message);
+        if (errInfo.error.includes('insufficient permissions')) {
+          errorMessage = 'Security error: You do not have permission to send messages.';
+        }
+      } catch {
+        // Not a JSON error, use original message
+        errorMessage = error.message || errorMessage;
+      }
+
+      setErrors({ submit: errorMessage });
       setIsSubmitting(false);
     }
   };
