@@ -19,13 +19,21 @@ const categories = ['All Projects', 'Web Development', 'Graphic Design', 'Mobile
 export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeCategory, setActiveCategory] = useState('All Projects');
+  const [isLoading, setIsLoading] = useState(true);
   const { playHover, playClick, playAppear } = useSoundEffects();
 
   useEffect(() => {
     fetch('/api/projects')
-      .then(res => res.json())
-      .then(data => setProjects(data))
-      .catch(err => console.error('Failed to fetch projects:', err));
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        console.log('Projects fetched:', data);
+        setProjects(data);
+      })
+      .catch(err => console.error('Failed to fetch projects:', err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const filteredProjects = activeCategory === 'All Projects' 
@@ -74,9 +82,14 @@ export default function Projects() {
         layout
         className="grid grid-cols-1 md:grid-cols-2 gap-8"
       >
-        <AnimatePresence mode="popLayout">
-          {filteredProjects.map((project) => (
-            <motion.div 
+        {isLoading ? (
+          <div className="col-span-full text-center py-12 text-gray-400">Loading projects...</div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="col-span-full text-center py-12 text-gray-400">No projects found.</div>
+        ) : (
+          <AnimatePresence mode="popLayout">
+            {filteredProjects.map((project) => (
+              <motion.div 
               key={project.id}
               layout
               initial={{ opacity: 0, scale: 0.9 }}
@@ -126,6 +139,7 @@ export default function Projects() {
             </motion.div>
           ))}
         </AnimatePresence>
+        )}
       </motion.div>
     </Section>
   );
