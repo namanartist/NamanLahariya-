@@ -102,7 +102,7 @@ export default function AIAssistant() {
           }
         ],
         config: {
-          systemInstruction: "You are Naman Lahariya's personal AI assistant. Keep responses concise and helpful. Use the sendInterestToNaman tool when a user wants to connect or hire Naman.",
+          systemInstruction: "You are Naman Lahariya's personal AI assistant. Keep responses concise and helpful. Use the sendInterestToNaman tool when a user wants to connect or hire Naman. When you use this tool, inform the user that Naman has been notified via Telegram and will respond shortly.",
           tools: tools
         }
       });
@@ -200,15 +200,19 @@ export default function AIAssistant() {
               >
                 <Mail size={12} /> Email Naman
               </button>
-              <a 
-                href="https://mail.google.com/chat" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <button 
+                onClick={() => {
+                  const contactSection = document.getElementById('contact');
+                  if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth' });
+                    setIsOpen(false);
+                  }
+                  playClick();
+                }}
                 className="whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-500 text-xs font-medium hover:bg-blue-500/20 transition-colors"
-                onClick={playClick}
               >
-                <MessageSquare size={12} /> Gmail Chat
-              </a>
+                <Mail size={12} /> Contact Form
+              </button>
               <button 
                 onClick={() => {
                   window.open("https://mail.google.com", "_blank");

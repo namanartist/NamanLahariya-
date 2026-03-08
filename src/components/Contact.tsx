@@ -36,16 +36,29 @@ export default function Contact() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
-    playSuccess();
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    // Reset success message after 5 seconds
-    setTimeout(() => setIsSuccess(false), 5000);
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+      
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      playSuccess();
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setErrors({ submit: 'Failed to send message. Please try again later.' });
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -184,6 +197,11 @@ export default function Contact() {
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                     {!isSubmitting && <Send size={18} />}
                   </button>
+                  {errors.submit && (
+                    <p className="text-xs text-red-500 text-center flex items-center justify-center gap-1">
+                      <AlertCircle size={10} /> {errors.submit}
+                    </p>
+                  )}
                 </motion.form>
               )}
             </AnimatePresence>

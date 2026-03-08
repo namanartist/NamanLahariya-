@@ -90,18 +90,53 @@ app.get('/api/articles/:id', (req, res) => {
   }
 });
 
-app.post('/api/contact', (req, res) => {
+// Helper to send Telegram notifications
+const sendTelegramNotification = async (message: string) => {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+  
+  if (telegramBotToken && telegramChatId) {
+    try {
+      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Telegram API Error (${response.status}):`, errorText);
+      } else {
+        console.log('Successfully sent message to Telegram');
+      }
+    } catch (error) {
+      console.error('Error sending message to Telegram:', error);
+    }
+  } else {
+    console.warn('TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set in environment variables.');
+  }
+};
+
+app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
   const stmt = db.prepare('INSERT INTO inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)');
   stmt.run(name, email, subject, message);
+  
+  // Send Telegram notification for contact form
+  const telegramMessage = `<b>New Contact Form Submission</b>\n\n<b>Name:</b> ${name}\n<b>Email:</b> ${email}\n<b>Subject:</b> ${subject}\n<b>Message:</b> ${message}`;
+  await sendTelegramNotification(telegramMessage);
+  
   res.json({ message: 'Message sent successfully' });
 });
 
-app.post('/api/ai/send-interest', (req, res) => {
+app.post('/api/ai/send-interest', async (req, res) => {
   const { clientName, clientEmail, interestDetails } = req.body;
   
-  // In a real app, you would use a service like Resend, SendGrid, or Nodemailer here.
-  // For this demo, we'll log it and return success.
   console.log('--- NEW CLIENT INTEREST FROM AI ASSISTANT ---');
   console.log(`From: ${clientName} (${clientEmail})`);
   console.log(`Details: ${interestDetails}`);
@@ -110,6 +145,10 @@ app.post('/api/ai/send-interest', (req, res) => {
   // Also save to inquiries table so it shows up in admin
   const stmt = db.prepare('INSERT INTO inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)');
   stmt.run(clientName, clientEmail, 'AI Assistant Lead', interestDetails);
+
+  // Send Telegram notification for AI Assistant
+  const telegramMessage = `<b>New Client Enquiry from AI Assistant</b>\n\n<b>Name:</b> ${clientName}\n<b>Email:</b> ${clientEmail}\n<b>Details:</b> ${interestDetails}`;
+  await sendTelegramNotification(telegramMessage);
 
   res.json({ 
     success: true, 
