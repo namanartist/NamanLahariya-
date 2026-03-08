@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
-import { Menu, X, Download } from 'lucide-react';
+import { Menu, X, Download, Sun, Moon } from 'lucide-react';
 import useSoundEffects from '../hooks/useSoundEffects';
+import { useTheme } from '../context/ThemeContext';
 
 const navItems = [
   { name: 'Home', href: '#home' },
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const { theme, toggleTheme } = useTheme();
   const { scrollY } = useScroll();
   const { playHover, playClick, playAppear, playSwoosh } = useSoundEffects();
 
@@ -77,12 +79,12 @@ export default function Navbar() {
       <div 
         className={`pointer-events-auto flex items-center justify-between px-6 py-3 rounded-full transition-all duration-300 ${
           scrolled 
-            ? "bg-white/5 backdrop-blur-md border border-white/10 shadow-lg w-full max-w-2xl" 
+            ? "bg-card/80 backdrop-blur-md border border-theme shadow-lg w-full max-w-2xl" 
             : "bg-transparent w-full max-w-7xl"
         }`}
       >
         <a href="#" className="flex items-center" onClick={playClick} onMouseEnter={playHover}>
-          <img src="/logo.svg" alt="NL." className="h-10 w-auto" />
+          <img src="/logo.svg" alt="NL." className={`h-10 w-auto transition-all ${theme === 'light' ? 'invert' : ''}`} />
         </a>
 
         {/* Desktop Menu */}
@@ -91,17 +93,30 @@ export default function Navbar() {
             <a
               key={item.name}
               href={item.href}
-              className="text-sm font-medium text-gray-300 hover:text-accent transition-colors tracking-wide"
+              className="text-sm font-medium text-muted hover:text-accent transition-colors tracking-wide"
               onMouseEnter={playHover}
               onClick={playClick}
             >
               {item.name}
             </a>
           ))}
+          
+          <button
+            onClick={() => {
+              toggleTheme();
+              playClick();
+            }}
+            className="p-2 rounded-full bg-card hover:bg-black/5 dark:hover:bg-white/10 border border-theme text-muted hover:text-accent transition-all shadow-sm"
+            onMouseEnter={playHover}
+            aria-label="Toggle theme"
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+
           {deferredPrompt && (
             <button
               onClick={handleInstallClick}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all group text-accent"
+              className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-black/5 dark:hover:bg-white/10 border border-theme rounded-full text-sm font-medium transition-all group text-accent shadow-sm"
               onMouseEnter={playHover}
             >
               <span>Install App</span>
@@ -112,7 +127,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden text-white"
+          className="md:hidden"
           onClick={toggleMobileMenu}
         >
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -125,13 +140,13 @@ export default function Navbar() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="absolute top-20 left-4 right-4 bg-[#121212] border border-white/10 rounded-2xl p-6 pointer-events-auto md:hidden flex flex-col gap-4 shadow-2xl"
+          className="absolute top-20 left-4 right-4 bg-card border border-theme rounded-2xl p-6 pointer-events-auto md:hidden flex flex-col gap-4 shadow-2xl"
         >
           {navItems.map((item) => (
             <a
               key={item.name}
               href={item.href}
-              className="text-lg font-medium text-gray-300 hover:text-accent text-center py-2"
+              className="text-lg font-medium text-muted hover:text-accent text-center py-2"
               onClick={() => {
                 setMobileMenuOpen(false);
                 playClick();
@@ -142,13 +157,37 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
+          
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={() => {
+                toggleTheme();
+                playClick();
+              }}
+              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-background border border-theme text-muted hover:text-accent transition-all shadow-sm"
+              onMouseEnter={playHover}
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon size={20} />
+                  <span>Dark Mode</span>
+                </>
+              ) : (
+                <>
+                  <Sun size={20} />
+                  <span>Light Mode</span>
+                </>
+              )}
+            </button>
+          </div>
+
           {deferredPrompt && (
             <button
               onClick={() => {
                 handleInstallClick();
                 setMobileMenuOpen(false);
               }}
-              className="flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-lg font-medium transition-all group text-accent mt-2"
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-background border border-theme rounded-xl text-lg font-medium transition-all group text-accent mt-2 shadow-sm"
               onMouseEnter={playHover}
             >
               <span>Install App</span>

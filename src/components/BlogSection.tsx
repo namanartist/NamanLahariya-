@@ -73,7 +73,7 @@ export default function BlogSection() {
           <h2 className="text-3xl md:text-5xl font-serif font-bold mb-2">
             Latest <span className="text-accent italic">Insights</span>
           </h2>
-          <p className="text-gray-400 max-w-md">
+          <p className="text-muted max-w-md">
             Thoughts, tutorials, and insights on technology, mathematics, and design.
           </p>
         </div>
@@ -91,11 +91,11 @@ export default function BlogSection() {
         {blogPosts.map((post) => (
           <article 
             key={post.id}
-            className="group flex flex-col bg-[#121212] border border-white/5 rounded-2xl overflow-hidden hover:border-accent/30 transition-all duration-300"
+            className="group flex flex-col bg-card border border-theme rounded-2xl overflow-hidden hover:border-accent/30 transition-all duration-300 shadow-sm"
             onMouseEnter={playHover}
           >
             <div className="p-6 flex flex-col flex-grow">
-              <div className="flex items-center gap-4 text-xs text-gray-500 mb-3 font-mono">
+              <div className="flex items-center gap-4 text-xs text-muted mb-3 font-mono">
                 <span className="flex items-center gap-1">
                   <Calendar size={12} />
                   {post.date}
@@ -106,17 +106,17 @@ export default function BlogSection() {
                 </span>
               </div>
               
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-accent transition-colors line-clamp-2">
+              <h3 className="text-xl font-bold mb-3 group-hover:text-accent transition-colors line-clamp-2">
                 {post.title}
               </h3>
               
-              <p className="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-3 flex-grow">
+              <p className="text-muted text-sm leading-relaxed mb-4 line-clamp-3 flex-grow">
                 {post.excerpt}
               </p>
               
               <Link 
                 to={`/blog/${post.id}`}
-                className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-white transition-colors mt-auto"
+                className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-foreground transition-colors mt-auto"
                 onMouseEnter={playHover}
                 onClick={playClick}
               >

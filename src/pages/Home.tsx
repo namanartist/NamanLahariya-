@@ -10,7 +10,7 @@ import Navbar from '../components/Navbar';
 
 export default function Home() {
   return (
-    <div className="bg-[#050505] min-h-screen text-white selection:bg-accent selection:text-black">
+    <div className="bg-background min-h-screen text-foreground selection:bg-accent selection:text-black">
       <Navbar />
       <main>
         <Hero />

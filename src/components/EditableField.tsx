@@ -39,7 +39,7 @@ export default function EditableField({ field, as = 'input', className = '', chi
           <textarea
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            className="w-full bg-white/10 border border-accent/50 rounded p-2 text-white outline-none focus:border-accent"
+            className="w-full bg-card border border-accent/50 rounded p-2 outline-none focus:border-accent"
             rows={4}
           />
         ) : (
@@ -47,7 +47,7 @@ export default function EditableField({ field, as = 'input', className = '', chi
             type="text"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            className="w-full bg-white/10 border border-accent/50 rounded p-2 text-white outline-none focus:border-accent"
+            className="w-full bg-card border border-accent/50 rounded p-2 outline-none focus:border-accent"
           />
         )}
         <div className="absolute top-2 right-2 flex gap-2">

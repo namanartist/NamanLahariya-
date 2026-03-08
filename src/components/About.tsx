@@ -46,7 +46,7 @@ export default function About() {
         <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4">
           Where Code Meets <span className="text-accent italic">Intelligence</span>
         </h2>
-        <p className="text-gray-400 max-w-2xl mx-auto mb-8">
+        <p className="text-muted max-w-2xl mx-auto mb-8">
           I build efficient, scalable digital solutions that matter. With a strong foundation in Mathematics and Computing, I approach problems with analytical precision and creative flair.
         </p>
       </motion.div>
@@ -66,11 +66,11 @@ export default function About() {
               variants={itemVariants}
               title={group.title} 
               icon={<IconComponent className={
-                group.title === 'Frontend' ? 'text-blue-400' :
-                group.title === 'Backend' ? 'text-green-400' :
-                group.title === 'Tools' ? 'text-purple-400' :
-                group.title === 'Core Concepts' ? 'text-red-400' :
-                group.title === 'Specialization' ? 'text-yellow-600' :
+                group.title === 'Frontend' ? 'text-blue-500 dark:text-blue-400' :
+                group.title === 'Backend' ? 'text-green-600 dark:text-green-400' :
+                group.title === 'Tools' ? 'text-purple-600 dark:text-purple-400' :
+                group.title === 'Core Concepts' ? 'text-red-600 dark:text-red-400' :
+                group.title === 'Specialization' ? 'text-yellow-700 dark:text-yellow-600' :
                 'text-accent'
               } size={24} />}
               skills={group.skills}
@@ -86,11 +86,11 @@ function SkillCard({ title, icon, skills, variants }: { title: string; icon: Rea
   return (
     <motion.div 
       variants={variants}
-      className="p-6 rounded-2xl bg-[#121212] border border-white/5 hover:border-accent/30 transition-all duration-300 group"
+      className="p-6 rounded-2xl bg-card border border-theme hover:border-accent/30 transition-all duration-300 group shadow-sm"
     >
       <div className="flex items-center gap-3 mb-4">
         <motion.div 
-          className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors"
+          className="p-2 rounded-lg bg-white/5 dark:bg-white/5 group-hover:bg-black/5 dark:group-hover:bg-white/10 transition-colors"
           initial={{ scale: 0.8, opacity: 0 }}
           whileInView={{ 
             scale: [0.8, 1.2, 1], 
@@ -109,7 +109,7 @@ function SkillCard({ title, icon, skills, variants }: { title: string; icon: Rea
       </div>
       <div className="flex flex-wrap gap-2">
         {skills.map(skill => (
-          <span key={skill} className="px-3 py-1 text-xs rounded-full bg-white/5 text-gray-400 border border-white/5">
+          <span key={skill} className="px-3 py-1 text-xs rounded-full bg-white/5 dark:bg-white/5 text-muted border border-theme">
             {skill}
           </span>
         ))}

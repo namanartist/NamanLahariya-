@@ -15,7 +15,7 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#050505] text-white">
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="text-center">
           <h1 className="text-4xl font-serif font-bold mb-4">Post Not Found</h1>
           <Link to="/" className="text-accent hover:underline">Return Home</Link>
@@ -35,14 +35,14 @@ export default function BlogPost() {
         <meta property="og:type" content="article" />
       </Helmet>
 
-      <div className="bg-[#050505] min-h-screen text-white selection:bg-accent selection:text-black">
+      <div className="bg-background min-h-screen text-foreground selection:bg-accent selection:text-black">
         <Navbar />
         
         <article className="pt-32 pb-20 px-4">
           <div className="max-w-3xl mx-auto">
             <Link 
               to="/" 
-              className="inline-flex items-center gap-2 text-gray-400 hover:text-accent mb-8 transition-colors"
+              className="inline-flex items-center gap-2 text-muted hover:text-accent mb-8 transition-colors"
               onMouseEnter={playHover}
               onClick={playClick}
             >
@@ -55,7 +55,7 @@ export default function BlogPost() {
               transition={{ duration: 0.6 }}
               onAnimationStart={() => playAppear()}
             >
-              <div className="aspect-video rounded-2xl overflow-hidden mb-8 border border-white/10">
+              <div className="aspect-video rounded-2xl overflow-hidden mb-8 border border-theme">
                 <img 
                   src={post.image} 
                   alt={post.title}
@@ -64,7 +64,7 @@ export default function BlogPost() {
                 />
               </div>
 
-              <div className="flex items-center gap-6 text-sm text-gray-500 mb-6 font-mono border-b border-white/10 pb-6">
+              <div className="flex items-center gap-6 text-sm text-muted mb-6 font-mono border-b border-theme pb-6">
                 <span className="flex items-center gap-2">
                   <Calendar size={16} className="text-accent" />
                   {post.date}
@@ -83,7 +83,7 @@ export default function BlogPost() {
                 {post.title}
               </h1>
 
-              <div className="prose prose-invert prose-lg max-w-none prose-headings:font-serif prose-a:text-accent prose-img:rounded-xl">
+              <div className="prose dark:prose-invert prose-lg max-w-none prose-headings:font-serif prose-a:text-accent prose-img:rounded-xl">
                 <ReactMarkdown>{post.content}</ReactMarkdown>
               </div>
             </motion.div>

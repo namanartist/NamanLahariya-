@@ -17,7 +17,7 @@ export default function Journey() {
             <GraduationCap className="text-accent" size={32} />
             <h3 className="text-2xl font-bold">Education Journey</h3>
           </div>
-          <div className="space-y-8 border-l border-white/10 ml-3 pl-8 relative">
+          <div className="space-y-8 border-l border-theme ml-3 pl-8 relative">
             <JourneyItem 
               year="2025 - 2029"
               title="B.Tech, Mathematics and Computing"
@@ -45,7 +45,7 @@ export default function Journey() {
             <Briefcase className="text-accent" size={32} />
             <h3 className="text-2xl font-bold">Work Journey</h3>
           </div>
-          <div className="space-y-8 border-l border-white/10 ml-3 pl-8 relative">
+          <div className="space-y-8 border-l border-theme ml-3 pl-8 relative">
             <JourneyItem 
               year="2026 - Present"
               title="Campus Ambassador"
@@ -73,11 +73,11 @@ function JourneyItem({ year, title, subtitle, description }: { year: string; tit
       whileHover={{ x: 10 }}
       onMouseEnter={playHover}
     >
-      <div className="absolute top-0 -left-[37px] w-4 h-4 rounded-full bg-[#050505] border-2 border-accent" />
+      <div className="absolute top-0 -left-[37px] w-4 h-4 rounded-full bg-background border-2 border-accent" />
       <span className="text-accent text-sm font-mono mb-1 block">{year}</span>
-      <h4 className="text-xl font-bold text-white mb-1">{title}</h4>
-      <h5 className="text-gray-400 text-sm mb-2">{subtitle}</h5>
-      <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
+      <h4 className="text-xl font-bold mb-1">{title}</h4>
+      <h5 className="text-muted text-sm mb-2">{subtitle}</h5>
+      <p className="text-muted/80 text-sm leading-relaxed">{description}</p>
     </motion.div>
   );
 }

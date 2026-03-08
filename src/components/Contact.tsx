@@ -62,7 +62,7 @@ export default function Contact() {
 
   return (
     <Section id="contact" className="pb-32">
-      <div className="bg-[#121212] rounded-3xl p-8 md:p-12 border border-white/5 relative overflow-hidden">
+      <div className="bg-card rounded-3xl p-8 md:p-12 border border-theme relative overflow-hidden shadow-lg">
         {/* Background Gradients */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
         
@@ -72,7 +72,7 @@ export default function Contact() {
               Let's Turn Ideas Into <br />
               <span className="text-accent italic">Reality Together</span>
             </h2>
-            <p className="text-gray-400 mb-8 max-w-md">
+            <p className="text-muted mb-8 max-w-md">
               Whether you have a project in mind or just want to say hi, I'm always open to discussing new opportunities and ideas.
             </p>
 
@@ -104,8 +104,8 @@ export default function Contact() {
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center text-accent mb-4">
                     <CheckCircle size={32} />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
-                  <p className="text-gray-400">Thank you for reaching out. I'll get back to you as soon as possible.</p>
+                  <h3 className="text-2xl font-bold mb-2">Message Sent!</h3>
+                  <p className="text-muted">Thank you for reaching out. I'll get back to you as soon as possible.</p>
                   <button 
                     onClick={() => setIsSuccess(false)}
                     className="mt-6 text-sm text-accent hover:underline"
@@ -119,30 +119,30 @@ export default function Contact() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="space-y-4 bg-white/5 p-6 rounded-2xl border border-white/5" 
+                  className="space-y-4 bg-white/5 dark:bg-white/5 p-6 rounded-2xl border border-theme shadow-sm" 
                   onSubmit={handleSubmit}
                 >
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-mono text-gray-500 uppercase">Name *</label>
+                      <label className="text-xs font-mono text-muted uppercase">Name *</label>
                       <input 
                         type="text" 
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className={`w-full bg-[#050505] border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors ${errors.name ? 'border-red-500' : 'border-white/10'}`}
+                        className={`w-full bg-card border rounded-lg px-4 py-3 focus:outline-none focus:border-accent/50 transition-colors ${errors.name ? 'border-red-500' : 'border-theme'}`}
                         placeholder="John Doe"
                       />
                       {errors.name && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.name}</span>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-mono text-gray-500 uppercase">Email *</label>
+                      <label className="text-xs font-mono text-muted uppercase">Email *</label>
                       <input 
                         type="email" 
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className={`w-full bg-[#050505] border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors ${errors.email ? 'border-red-500' : 'border-white/10'}`}
+                        className={`w-full bg-card border rounded-lg px-4 py-3 focus:outline-none focus:border-accent/50 transition-colors ${errors.email ? 'border-red-500' : 'border-theme'}`}
                         placeholder="john@example.com"
                       />
                       {errors.email && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.email}</span>}
@@ -150,25 +150,25 @@ export default function Contact() {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-gray-500 uppercase">Subject</label>
+                    <label className="text-xs font-mono text-muted uppercase">Subject</label>
                     <input 
                       type="text" 
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      className="w-full bg-[#050505] border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors"
+                      className="w-full bg-card border border-theme rounded-lg px-4 py-3 focus:outline-none focus:border-accent/50 transition-colors"
                       placeholder="Project Inquiry"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-mono text-gray-500 uppercase">Message *</label>
+                    <label className="text-xs font-mono text-muted uppercase">Message *</label>
                     <textarea 
                       name="message"
                       rows={4}
                       value={formData.message}
                       onChange={handleChange}
-                      className={`w-full bg-[#050505] border rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent/50 transition-colors resize-none ${errors.message ? 'border-red-500' : 'border-white/10'}`}
+                      className={`w-full bg-card border rounded-lg px-4 py-3 focus:outline-none focus:border-accent/50 transition-colors resize-none ${errors.message ? 'border-red-500' : 'border-theme'}`}
                       placeholder="Tell me about your project..."
                     />
                     {errors.message && <span className="text-xs text-red-500 flex items-center gap-1"><AlertCircle size={10} /> {errors.message}</span>}
@@ -191,7 +191,7 @@ export default function Contact() {
         </div>
       </div>
       
-      <footer className="mt-20 text-center text-gray-600 text-sm">
+      <footer className="mt-20 text-center text-muted text-sm">
         <p>© {new Date().getFullYear()} Naman Lahariya. All rights reserved.</p>
       </footer>
     </Section>
@@ -206,12 +206,12 @@ function ContactItem({ icon, label, value, href }: { icon: ReactNode; label: str
       onMouseEnter={playHover}
       onClick={playClick}
     >
-      <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-accent group-hover:bg-white/10 transition-all">
+      <div className="w-12 h-12 rounded-full bg-white/5 dark:bg-white/5 flex items-center justify-center text-muted group-hover:text-accent group-hover:bg-black/5 dark:group-hover:bg-white/10 transition-all">
         {icon}
       </div>
       <div>
-        <p className="text-xs font-mono text-gray-500 uppercase mb-0.5">{label}</p>
-        <p className="text-white font-medium group-hover:text-accent transition-colors">{value}</p>
+        <p className="text-xs font-mono text-muted uppercase mb-0.5">{label}</p>
+        <p className="font-medium group-hover:text-accent transition-colors">{value}</p>
       </div>
     </div>
   );

@@ -62,7 +62,7 @@ export default function Projects() {
           <h2 className="text-3xl md:text-5xl font-serif font-bold mb-2">
             Featured <span className="text-accent italic">Projects</span>
           </h2>
-          <p className="text-gray-400 max-w-md">
+          <p className="text-muted max-w-md">
             A selection of projects demonstrating my expertise in coding, mathematics, and problem-solving.
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function Projects() {
             className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
               activeCategory === category
                 ? 'bg-accent text-black border-accent'
-                : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30 hover:text-white'
+                : 'bg-transparent text-muted border-theme hover:border-accent/30 hover:text-accent'
             }`}
           >
             {category}
@@ -91,9 +91,9 @@ export default function Projects() {
         className="grid grid-cols-1 md:grid-cols-2 gap-8"
       >
         {isLoading ? (
-          <div className="col-span-full text-center py-12 text-gray-400">Loading projects...</div>
+          <div className="col-span-full text-center py-12 text-muted">Loading projects...</div>
         ) : filteredProjects.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-gray-400">No projects found.</div>
+          <div className="col-span-full text-center py-12 text-muted">No projects found.</div>
         ) : (
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
@@ -109,7 +109,7 @@ export default function Projects() {
                 boxShadow: "0 10px 30px -10px rgba(255, 215, 0, 0.1)"
               }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="group relative rounded-2xl overflow-hidden bg-[#121212] border border-white/5"
+              className="group relative rounded-2xl overflow-hidden bg-card border border-theme shadow-sm"
               onMouseEnter={playHover}
             >
               <div className="p-6 relative z-10">
@@ -118,27 +118,27 @@ export default function Projects() {
                     <span className="text-accent text-xs font-mono uppercase tracking-wider mb-2 block">
                       {project.category}
                     </span>
-                    <h3 className="text-xl font-bold text-white group-hover:text-accent transition-colors">
+                    <h3 className="text-xl font-bold group-hover:text-accent transition-colors">
                       {project.title}
                     </h3>
                   </div>
                   <div className="flex gap-2">
-                    <a href={project.githubLink} className="p-2 rounded-full bg-white/5 hover:bg-white/10 hover:text-accent transition-colors" onMouseEnter={playHover} onClick={playClick}>
+                    <a href={project.githubLink} className="p-2 rounded-full bg-white/5 dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 hover:text-accent transition-colors" onMouseEnter={playHover} onClick={playClick}>
                       <Github size={18} />
                     </a>
-                    <a href={project.demoLink} className="p-2 rounded-full bg-white/5 hover:bg-white/10 hover:text-accent transition-colors" onMouseEnter={playHover} onClick={playClick}>
+                    <a href={project.demoLink} className="p-2 rounded-full bg-white/5 dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 hover:text-accent transition-colors" onMouseEnter={playHover} onClick={playClick}>
                       <ExternalLink size={18} />
                     </a>
                   </div>
                 </div>
                 
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                <p className="text-muted text-sm leading-relaxed mb-6 line-clamp-3">
                   {project.description}
                 </p>
 
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map(t => (
-                    <span key={t} className="text-xs px-2 py-1 rounded bg-white/5 text-gray-500 border border-white/5">
+                    <span key={t} className="text-xs px-2 py-1 rounded bg-white/5 dark:bg-white/5 text-muted border border-theme">
                       {t}
                     </span>
                   ))}

@@ -97,6 +97,26 @@ app.post('/api/contact', (req, res) => {
   res.json({ message: 'Message sent successfully' });
 });
 
+app.post('/api/ai/send-interest', (req, res) => {
+  const { clientName, clientEmail, interestDetails } = req.body;
+  
+  // In a real app, you would use a service like Resend, SendGrid, or Nodemailer here.
+  // For this demo, we'll log it and return success.
+  console.log('--- NEW CLIENT INTEREST FROM AI ASSISTANT ---');
+  console.log(`From: ${clientName} (${clientEmail})`);
+  console.log(`Details: ${interestDetails}`);
+  console.log('---------------------------------------------');
+
+  // Also save to inquiries table so it shows up in admin
+  const stmt = db.prepare('INSERT INTO inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)');
+  stmt.run(clientName, clientEmail, 'AI Assistant Lead', interestDetails);
+
+  res.json({ 
+    success: true, 
+    message: 'Interest sent to Naman Lahariya successfully. He will get back to you soon!' 
+  });
+});
+
 // Protected Admin Routes
 app.get('/api/admin/inquiries', authenticateToken, (req, res) => {
   const inquiries = db.prepare('SELECT * FROM inquiries ORDER BY date DESC').all();

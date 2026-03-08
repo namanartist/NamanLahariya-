@@ -1,9 +1,12 @@
 import { motion, AnimatePresence } from 'motion/react';
 import useSoundEffects from '../hooks/useSoundEffects';
 import { useEffect, useState } from 'react';
+import { useTheme } from '../context/ThemeContext';
+import { Sun, Moon } from 'lucide-react';
 
 export default function Loader({ onComplete }: { onComplete: () => void }) {
-  const { playVaultUnlock } = useSoundEffects();
+  const { playVaultUnlock, playClick, playHover } = useSoundEffects();
+  const { theme, setTheme } = useTheme();
   const [status, setStatus] = useState("SYSTEM STANDBY");
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -26,14 +29,15 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
     setTimeout(onComplete, 3500);
   };
 
+  const accentColor = theme === 'light' ? '#3b82f6' : '#FFD700'; // Blue for light, Gold for dark
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050505] cursor-pointer"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
-      onClick={handleStart}
     >
-      <div className="relative flex items-center justify-center w-64 h-64">
+      <div className="relative flex items-center justify-center w-64 h-64 cursor-pointer" onClick={handleStart}>
         {/* Glow Effect on Unlock */}
         <AnimatePresence>
           {isUnlocked && (
@@ -48,7 +52,7 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
 
         {/* Ring 1: Outer Dashed */}
         <motion.div
-          className="absolute w-64 h-64 border border-white/10 rounded-full"
+          className="absolute w-64 h-64 border border-theme rounded-full"
           animate={{ rotate: hasStarted ? 360 : 0 }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
         >
@@ -60,8 +64,8 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
 
         {/* Ring 2: Middle Counter-Rotate */}
         <motion.div
-          className="absolute w-48 h-48 border-2 border-white/20 rounded-full border-t-accent border-b-accent/20 border-l-white/10 border-r-white/10"
-          animate={isUnlocked ? { rotate: 0, scale: 1.1, borderColor: "#FFD700" } : { rotate: hasStarted ? -360 : 0 }}
+          className="absolute w-48 h-48 border-2 border-theme rounded-full border-t-accent border-b-accent/20"
+          animate={isUnlocked ? { rotate: 0, scale: 1.1, borderColor: accentColor } : { rotate: hasStarted ? -360 : 0 }}
           transition={isUnlocked ? { duration: 0.5 } : { duration: 3, repeat: Infinity, ease: "linear" }}
         />
 
@@ -74,10 +78,10 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
 
         {/* Center Logo */}
         <motion.div
-          className="relative z-10 flex items-center justify-center w-20 h-20 bg-[#050505] rounded-full border border-accent/20"
+          className="relative z-10 flex items-center justify-center w-20 h-20 bg-card rounded-full border border-accent/20"
           animate={isUnlocked ? { 
-            boxShadow: "0 0 30px rgba(255, 215, 0, 0.5)",
-            borderColor: "#FFD700",
+            boxShadow: `0 0 30px ${accentColor}80`,
+            borderColor: accentColor,
             scale: 1.1
           } : {}}
         >
@@ -105,14 +109,44 @@ export default function Loader({ onComplete }: { onComplete: () => void }) {
         </motion.div>
         
         {!hasStarted && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-[10px] tracking-widest text-gray-500 uppercase"
-          >
-            [ Click to Initialize ]
-          </motion.div>
+          <div className="flex flex-col items-center gap-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-[10px] tracking-widest text-muted uppercase cursor-pointer"
+              onClick={handleStart}
+            >
+              [ Click to Initialize ]
+            </motion.div>
+
+            {/* Theme Selector */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="flex items-center gap-4 p-1 bg-card border border-theme rounded-full shadow-sm"
+            >
+              <button
+                onClick={() => { setTheme('light'); playClick(); }}
+                onMouseEnter={playHover}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all ${
+                  theme === 'light' ? 'bg-accent text-black' : 'text-muted hover:text-foreground'
+                }`}
+              >
+                <Sun size={12} /> Light
+              </button>
+              <button
+                onClick={() => { setTheme('dark'); playClick(); }}
+                onMouseEnter={playHover}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all ${
+                  theme === 'dark' ? 'bg-accent text-black' : 'text-muted hover:text-foreground'
+                }`}
+              >
+                <Moon size={12} /> Dark
+              </button>
+            </motion.div>
+          </div>
         )}
       </div>
     </motion.div>

@@ -42,7 +42,7 @@ export default function Certifications() {
         <h2 className="text-3xl md:text-5xl font-serif font-bold mb-2">
           My <span className="text-accent italic">Certifications</span>
         </h2>
-        <p className="text-gray-400 max-w-md">
+        <p className="text-muted max-w-md">
           Professional certifications and achievements demonstrating my commitment to continuous learning.
         </p>
       </div>
@@ -58,7 +58,7 @@ export default function Certifications() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
-            className="group p-6 rounded-2xl bg-[#121212] border border-white/5 hover:border-accent/30 transition-all duration-300 flex flex-col justify-between h-full"
+            className="group p-6 rounded-2xl bg-card border border-theme hover:border-accent/30 transition-all duration-300 flex flex-col justify-between h-full shadow-sm"
             onMouseEnter={playHover}
             onClick={playClick}
           >
@@ -66,10 +66,10 @@ export default function Certifications() {
               <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent mb-4 group-hover:scale-110 transition-transform">
                 <Award size={24} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-accent transition-colors">
+              <h3 className="text-xl font-bold group-hover:text-accent transition-colors">
                 {cert.title}
               </h3>
-              <p className="text-gray-400 text-sm mb-4">
+              <p className="text-muted text-sm mb-4">
                 Issued by {cert.issuer}
               </p>
             </div>

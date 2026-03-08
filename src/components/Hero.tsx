@@ -30,7 +30,7 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className="mb-8 relative inline-block"
         >
-          <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl mx-auto relative z-10 bg-[#1a1a1a]">
+          <div className="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden border-2 border-theme shadow-2xl mx-auto relative z-10 bg-card">
              <img 
                src={siteData.avatarUrl} 
                alt={siteData.name} 
@@ -45,7 +45,7 @@ export default function Hero() {
           </div>
           {/* Decorative elements behind image */}
           <div className="absolute -top-4 -right-4 w-20 h-20 border border-accent/20 rounded-full z-0" />
-          <div className="absolute -bottom-4 -left-4 w-20 h-20 border border-white/5 rounded-full z-0" />
+          <div className="absolute -bottom-4 -left-4 w-20 h-20 border border-theme rounded-full z-0" />
         </motion.div>
 
         <motion.h1
@@ -61,10 +61,10 @@ export default function Hero() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed"
+          className="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-8 leading-relaxed"
         >
           <EditableField field="title" as="textarea" className="block mb-2">
-            <span className="text-white font-medium">{siteData.title}</span>
+            <span className="font-medium">{siteData.title}</span>
           </EditableField>
           <EditableField field="bio" as="textarea" className="block">
             {siteData.bio}
@@ -83,22 +83,22 @@ export default function Hero() {
             <SocialLink href={siteData.email} icon={<Mail size={20} />} playHover={playHover} playClick={playClick} />
           </div>
           
-          <div className="h-px w-12 bg-white/10 hidden md:block" />
+          <div className="h-px w-12 bg-theme hidden md:block" />
           
-          <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="flex items-center gap-2 text-sm text-muted">
             <MapPin size={16} className="text-accent" />
             <EditableField field="location">
               <span>{siteData.location}</span>
             </EditableField>
           </div>
 
-          <div className="h-px w-12 bg-white/10 hidden md:block" />
+          <div className="h-px w-12 bg-theme hidden md:block" />
 
           <a 
             href={siteData.resumeLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all group"
+            className="flex items-center gap-2 px-6 py-2 bg-card hover:bg-black/5 dark:hover:bg-white/10 border border-theme rounded-full text-sm font-medium transition-all group shadow-sm"
             onMouseEnter={playHover}
             onClick={playClick}
           >
@@ -112,7 +112,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 10, 0] }}
         transition={{ delay: 1, duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-500"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted"
       >
         <ChevronDown size={24} />
       </motion.div>
@@ -126,7 +126,7 @@ function SocialLink({ href, icon, playHover, playClick }: { href: string; icon: 
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10 hover:border-accent hover:text-accent transition-all duration-300"
+      className="w-10 h-10 flex items-center justify-center rounded-full bg-card border border-theme hover:border-accent hover:text-accent transition-all duration-300 shadow-sm"
       onMouseEnter={playHover}
       onClick={playClick}
     >

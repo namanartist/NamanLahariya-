@@ -11,7 +11,7 @@ export default function Skills() {
         <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4">
           Skills & <span className="text-accent italic">Expertise</span>
         </h2>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+        <p className="text-muted max-w-2xl mx-auto">
           A comprehensive toolkit of technical proficiencies and professional attributes.
         </p>
       </div>
@@ -25,31 +25,31 @@ export default function Skills() {
         />
         <SkillCard 
           title="Frontend" 
-          icon={<Layout className="text-blue-400" size={24} />}
+          icon={<Layout className="text-blue-500 dark:text-blue-400" size={24} />}
           skills={['HTML5', 'CSS3', 'React', 'Tailwind CSS']}
           delay={0.1}
         />
         <SkillCard 
           title="Backend" 
-          icon={<Database className="text-green-400" size={24} />}
+          icon={<Database className="text-green-600 dark:text-green-400" size={24} />}
           skills={['Node.js', 'Express', 'SQL', 'MongoDB']}
           delay={0.2}
         />
         <SkillCard 
           title="Tools" 
-          icon={<Terminal className="text-purple-400" size={24} />}
+          icon={<Terminal className="text-purple-600 dark:text-purple-400" size={24} />}
           skills={['Git', 'GitHub', 'VS Code', 'Postman']}
           delay={0.3}
         />
         <SkillCard 
           title="Core Concepts" 
-          icon={<Cpu className="text-red-400" size={24} />}
+          icon={<Cpu className="text-red-600 dark:text-red-400" size={24} />}
           skills={['Data Structures', 'Algorithms', 'OOPs', 'DBMS']}
           delay={0.4}
         />
         <SkillCard 
           title="Specialization" 
-          icon={<Brain className="text-yellow-600" size={24} />}
+          icon={<Brain className="text-yellow-700 dark:text-yellow-600" size={24} />}
           skills={['Mathematics', 'Computing', 'Optimization', 'Problem Solving']}
           delay={0.5}
         />
@@ -78,17 +78,17 @@ function SkillCard({ title, icon, skills, delay }: { title: string; icon: ReactN
       transition={{ delay, duration: 0.5 }}
       onAnimationStart={() => playAppear()}
       onMouseEnter={playHover}
-      className="p-6 rounded-2xl bg-[#121212] border border-white/5 hover:border-accent/30 transition-all duration-300 group hover:-translate-y-1"
+      className="p-6 rounded-2xl bg-card border border-theme hover:border-accent/30 transition-all duration-300 group hover:-translate-y-1 shadow-sm"
     >
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+        <div className="p-2 rounded-lg bg-white/5 dark:bg-white/5 group-hover:bg-black/5 dark:group-hover:bg-white/10 transition-colors">
           {icon}
         </div>
-        <h3 className="font-medium text-lg text-white">{title}</h3>
+        <h3 className="font-medium text-lg">{title}</h3>
       </div>
       <div className="flex flex-wrap gap-2">
         {skills.map(skill => (
-          <span key={skill} className="px-3 py-1 text-xs rounded-full bg-white/5 text-gray-400 border border-white/5 group-hover:border-white/10 transition-colors">
+          <span key={skill} className="px-3 py-1 text-xs rounded-full bg-white/5 dark:bg-white/5 text-muted border border-theme group-hover:border-accent/20 transition-colors">
             {skill}
           </span>
         ))}
@@ -103,10 +103,10 @@ function SoftSkillCard({ icon, title }: { icon: ReactNode; title: string }) {
     <motion.div 
       whileHover={{ scale: 1.05 }}
       onMouseEnter={playHover}
-      className="flex flex-col items-center justify-center p-6 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors text-center gap-3"
+      className="flex flex-col items-center justify-center p-6 rounded-xl bg-card border border-theme hover:bg-black/5 dark:hover:bg-white/10 transition-colors text-center gap-3 shadow-sm"
     >
       <div className="text-accent">{icon}</div>
-      <span className="font-medium text-sm text-gray-300">{title}</span>
+      <span className="font-medium text-sm text-muted">{title}</span>
     </motion.div>
   );
 }

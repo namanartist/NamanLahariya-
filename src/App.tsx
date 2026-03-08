@@ -7,14 +7,18 @@ import Home from './pages/Home';
 import BlogPost from './pages/BlogPost';
 import CustomCursor from './components/CustomCursor';
 import { SiteProvider } from './context/SiteContext';
+import { ThemeProvider } from './context/ThemeContext';
+import AIAssistant from './components/AIAssistant';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
 
   return (
     <HelmetProvider>
-      <SiteProvider>
+      <ThemeProvider>
+        <SiteProvider>
         <CustomCursor />
+        <AIAssistant />
         <Router>
           <AnimatePresence mode="wait">
             {loading ? (
@@ -32,7 +36,8 @@ export default function App() {
             )}
           </AnimatePresence>
         </Router>
-      </SiteProvider>
+        </SiteProvider>
+      </ThemeProvider>
     </HelmetProvider>
   );
 }
