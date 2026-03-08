@@ -17,6 +17,7 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const sessionRef = useRef<any>(null);
+  const nextStartTimeRef = useRef<number>(0);
   const { siteData } = useSiteData();
 
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +60,7 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Puck" } },
           },
           systemInstruction: `You are Naman Lahariya's personal AI assistant. 
           You are interacting with a user via a live audio feed.
@@ -70,12 +71,15 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
           Bio: ${siteData.bio}
           Location: ${siteData.location}
           
-          Be professional, friendly, and helpful. Keep responses concise and natural for speech.`,
+          CRITICAL: Speak with a natural, human-like pace and normal speed. Use pauses for emphasis. 
+          Do not rush your words. Imagine you are having a relaxed, professional conversation.
+          Keep responses concise but natural.`,
         },
         callbacks: {
           onopen: () => {
             setIsConnected(true);
             setIsConnecting(false);
+            nextStartTimeRef.current = audioContextRef.current!.currentTime;
             
             // Start sending audio chunks
             const source = audioContextRef.current!.createMediaStreamSource(stream);
@@ -108,6 +112,11 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
             processor.connect(audioContextRef.current!.destination);
           },
           onmessage: (message: LiveServerMessage) => {
+            if (message.serverContent?.interrupted) {
+              // Reset scheduling on interruption
+              nextStartTimeRef.current = audioContextRef.current?.currentTime || 0;
+              return;
+            }
             const audioData = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
             if (audioData) {
               playAudioChunk(audioData);
@@ -153,8 +162,18 @@ export default function LiveAssistant({ isOpen, onClose }: LiveAssistantProps) {
     
     const source = audioContextRef.current.createBufferSource();
     source.buffer = buffer;
-    source.connect(audioContextRef.current.destination);
-    source.start();
+    
+    // Gain node for volume control
+    const gainNode = audioContextRef.current.createGain();
+    gainNode.gain.value = volume;
+    
+    source.connect(gainNode);
+    gainNode.connect(audioContextRef.current.destination);
+    
+    // Schedule playback
+    const startTime = Math.max(audioContextRef.current.currentTime, nextStartTimeRef.current);
+    source.start(startTime);
+    nextStartTimeRef.current = startTime + buffer.duration;
   };
 
   const stopSession = () => {
