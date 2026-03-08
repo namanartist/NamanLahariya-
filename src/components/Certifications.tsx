@@ -11,15 +11,29 @@ interface Certification {
   link: string;
 }
 
+import { initialCertifications } from '../data/initialData';
+
 export default function Certifications() {
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const { playHover, playClick } = useSoundEffects();
 
   useEffect(() => {
     fetch('/api/certifications')
-      .then(res => res.json())
-      .then(data => setCertifications(data))
-      .catch(err => console.error('Failed to fetch certifications:', err));
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCertifications(data);
+        } else {
+          setCertifications(initialCertifications);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch certifications, using fallback:', err);
+        setCertifications(initialCertifications);
+      });
   }, []);
 
   return (

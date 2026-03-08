@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import useSoundEffects from '../hooks/useSoundEffects';
 
+import { initialProjects } from '../data/initialData';
+
 interface Project {
   id: number;
   title: string;
@@ -29,10 +31,16 @@ export default function Projects() {
         return res.json();
       })
       .then(data => {
-        console.log('Projects fetched:', data);
-        setProjects(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        } else {
+          setProjects(initialProjects);
+        }
       })
-      .catch(err => console.error('Failed to fetch projects:', err))
+      .catch(err => {
+        console.error('Failed to fetch projects, using fallback:', err);
+        setProjects(initialProjects);
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
