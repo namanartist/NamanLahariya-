@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#050505"/>
-  <text x="50%" y="50%" font-family="serif" font-size="200" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="central">
-    NL<tspan fill="#F27D26">.</tspan>
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="Playfair Display, Times New Roman, serif" font-weight="bold" font-size="300" fill="white">
+    NL<tspan fill="#FFD700">.</tspan>
   </text>
 </svg>

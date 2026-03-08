@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
 import useSoundEffects from '../hooks/useSoundEffects';
 
 const navItems = [
@@ -16,8 +16,32 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const { scrollY } = useScroll();
   const { playHover, playClick, playAppear, playSwoosh } = useSoundEffects();
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    playClick();
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   const toggleMobileMenu = () => {
     const newState = !mobileMenuOpen;
@@ -57,8 +81,8 @@ export default function Navbar() {
             : "bg-transparent w-full max-w-7xl"
         }`}
       >
-        <a href="#" className="text-xl font-serif font-bold text-white tracking-wider" onClick={playClick} onMouseEnter={playHover}>
-          NL<span className="text-accent">.</span>
+        <a href="#" className="flex items-center" onClick={playClick} onMouseEnter={playHover}>
+          <img src="/logo.svg" alt="NL." className="h-10 w-auto" />
         </a>
 
         {/* Desktop Menu */}
@@ -74,6 +98,16 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
+          {deferredPrompt && (
+            <button
+              onClick={handleInstallClick}
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-sm font-medium transition-all group text-accent"
+              onMouseEnter={playHover}
+            >
+              <span>Install App</span>
+              <Download size={16} className="group-hover:translate-y-0.5 transition-transform" />
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -108,6 +142,19 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
+          {deferredPrompt && (
+            <button
+              onClick={() => {
+                handleInstallClick();
+                setMobileMenuOpen(false);
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-lg font-medium transition-all group text-accent mt-2"
+              onMouseEnter={playHover}
+            >
+              <span>Install App</span>
+              <Download size={20} />
+            </button>
+          )}
         </motion.div>
       )}
     </motion.nav>
