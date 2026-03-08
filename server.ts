@@ -123,15 +123,38 @@ const sendTelegramNotification = async (message: string) => {
 };
 
 app.post('/api/contact', async (req, res) => {
-  const { name, email, subject, message } = req.body;
-  const stmt = db.prepare('INSERT INTO inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)');
-  stmt.run(name, email, subject, message);
+  console.log('--- NEW CONTACT FORM SUBMISSION ---');
+  console.log('Body:', req.body);
   
-  // Send Telegram notification for contact form
-  const telegramMessage = `<b>New Contact Form Submission</b>\n\n<b>Name:</b> ${name}\n<b>Email:</b> ${email}\n<b>Subject:</b> ${subject}\n<b>Message:</b> ${message}`;
-  await sendTelegramNotification(telegramMessage);
-  
-  res.json({ message: 'Message sent successfully' });
+  try {
+    const { name, email, subject, message } = req.body;
+    
+    if (!name || !email || !message) {
+      console.error('Validation Error: Missing required fields');
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const stmt = db.prepare('INSERT INTO inquiries (name, email, subject, message) VALUES (?, ?, ?, ?)');
+    stmt.run(name, email, subject, message);
+    console.log('Successfully saved to database');
+    
+    // Send Telegram notification for contact form
+    const telegramMessage = `<b>New Contact Form Submission</b>\n\n<b>Name:</b> ${name}\n<b>Email:</b> ${email}\n<b>Subject:</b> ${subject || 'N/A'}\n<b>Message:</b> ${message}`;
+    
+    // Don't await this if we don't want to block the response, 
+    // but the user wants it redirected, so we should ensure it's sent.
+    // However, if it fails, we still want to return success for the DB save.
+    try {
+      await sendTelegramNotification(telegramMessage);
+    } catch (tgError) {
+      console.error('Telegram notification failed but DB save succeeded:', tgError);
+    }
+    
+    res.json({ message: 'Message sent successfully' });
+  } catch (error) {
+    console.error('CRITICAL ERROR in /api/contact:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 app.post('/api/ai/send-interest', async (req, res) => {
@@ -232,6 +255,13 @@ async function startServer() {
 
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    
+    // Check for critical environment variables
+    if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) {
+      console.warn('⚠️ WARNING: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing. Notifications will not work.');
+    } else {
+      console.log('✅ Telegram notifications are configured.');
+    }
   });
 }
 

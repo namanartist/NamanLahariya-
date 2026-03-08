@@ -43,8 +43,10 @@ export default function Contact() {
         body: JSON.stringify(formData)
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error(data.message || 'Failed to send message');
       }
       
       setIsSubmitting(false);
@@ -54,9 +56,9 @@ export default function Contact() {
       
       // Reset success message after 5 seconds
       setTimeout(() => setIsSuccess(false), 5000);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error);
-      setErrors({ submit: 'Failed to send message. Please try again later.' });
+      setErrors({ submit: error.message || 'Failed to send message. Please try again later.' });
       setIsSubmitting(false);
     }
   };
